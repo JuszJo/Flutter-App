@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 
 // create your own widget either stateful or stateless
 
-class MyAppStatusBar extends StatelessWidget {
+/* class MyAppStatusBar extends StatelessWidget {
   // pass super to constructor
   const MyAppStatusBar({required this.title, super.key});
 
@@ -97,8 +97,8 @@ class BottomBar extends StatelessWidget {
 
 // whatever the fuck scaffold is
 
-class Scaffold extends StatelessWidget {
-  const Scaffold({super.key});
+class MyScaffold extends StatelessWidget {
+  const MyScaffold({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -134,8 +134,57 @@ void main() {
     const MaterialApp(
       title: "OMO",
       home: SafeArea(
-        child: Scaffold(),
+        child: MyScaffold(),
       ),
     )
   );
+} */
+
+void main() {
+  runApp(
+    const MaterialApp(
+      title: 'Flutter Tutorial',
+      home: TutorialHome(),
+    ),
+  );
 }
+
+class TutorialHome extends StatelessWidget {
+  const TutorialHome({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: const IconButton(
+          icon: Icon(Icons.menu),
+          tooltip: 'Navigation Menu',
+          onPressed: null,
+        ),
+
+        title: const Text('The Hell is this!'), centerTitle: true,
+
+        actions: const [
+          IconButton(
+            icon: Icon(Icons.search),
+            tooltip: 'Search',
+            onPressed: null,
+          ),
+        ],
+      ),
+
+      body: const Center(
+        child: Text('Hello World'),
+      ),
+
+      floatingActionButton: const FloatingActionButton(
+        tooltip: 'Add',
+        onPressed: null,
+        child: Icon(Icons.add)
+      ),
+    );
+  }
+}
+
+// GESTURESSSSSSSSS
+

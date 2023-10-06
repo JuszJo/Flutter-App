@@ -194,7 +194,7 @@ void main() {
       title: 'OMO',
       home: Scaffold(
         body: Center(
-          child: MyButton(),
+          child: MyCounter(),
         )
       )
     ),
@@ -223,6 +223,43 @@ class MyButton extends StatelessWidget {
           child: Text('Engage'),
         ),
       ),
+    );
+  }
+}
+
+class MyCounter extends StatefulWidget {
+  const MyCounter({super.key});
+
+  @override
+  State<MyCounter> createState() => _MyCounterState();
+}
+
+class _MyCounterState extends State<MyCounter> {
+  int _counter = 0;
+
+  void _increment() {
+    setState(() {
+
+      _counter += 1;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget> [
+        ElevatedButton(
+          onPressed: _increment,
+          child: const Text('Increment'),
+        ),
+
+        const SizedBox(
+          width: 16,
+        ),
+
+        Text('Count: $_counter'),
+      ],
     );
   }
 }

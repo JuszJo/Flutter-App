@@ -188,7 +188,7 @@ class TutorialHome extends StatelessWidget {
 
 // GESTURESSSSSSSSS
 
-void main() {
+/* void main() {
   runApp(
     const MaterialApp(
       title: 'OMO',
@@ -262,6 +262,82 @@ class _MyCounterState extends State<MyCounter> {
       ],
     );
   }
-}
+} */
 
 // Assignment, Seperate Concerns
+
+void main() {
+  runApp(
+    const MaterialApp(
+      title: 'OMO',
+      home: MyNewApp(),
+    )
+  );
+}
+
+class MyNewApp extends StatelessWidget {
+  const MyNewApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: MyNewCounter(),
+      ),
+    );
+  }
+}
+
+class MyNewCounter extends StatefulWidget {
+  const MyNewCounter({super.key});
+
+  @override
+  State<MyNewCounter> createState() => _MyNewCounterState();
+}
+
+class _MyNewCounterState extends State<MyNewCounter> {
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      _counter += 1;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget> [
+        CounterButton(onPressed: _incrementCounter),
+        const SizedBox(width: 16),
+        CounterDisplay(text: _counter),
+      ],
+    );
+  }
+}
+
+class CounterDisplay extends StatelessWidget {
+  const CounterDisplay({required this.text, super.key});
+
+  final int text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text('Count is: $text');
+  }
+}
+
+class CounterButton extends StatelessWidget {
+  const CounterButton({required this.onPressed, super.key});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      child: const Text('Increment'),
+    );
+  }
+}

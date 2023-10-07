@@ -266,7 +266,7 @@ class _MyCounterState extends State<MyCounter> {
 
 // Assignment, Seperate Concerns
 
-void main() {
+/* void main() {
   runApp(
     const MaterialApp(
       title: 'OMO',
@@ -338,6 +338,62 @@ class CounterButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       child: const Text('Increment'),
+    );
+  }
+} */
+
+// Routing
+
+void main() {
+  runApp(
+    const MaterialApp(
+      home: RoutingBasics(),
+    )
+  );
+}
+
+class RoutingBasics extends StatelessWidget {
+  const RoutingBasics({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('First Route'), centerTitle: true,
+      ),
+
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+             context, MaterialPageRoute(builder: (context) => const SecondRoute()) 
+            );
+          },
+          child: const Text('Next Route'),
+        ),
+      ),
+    );
+  }
+}
+
+class SecondRoute extends StatelessWidget {
+  const SecondRoute({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Second Page'), centerTitle: true,
+      ),
+
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Go Back'),
+        )
+      ),
     );
   }
 }

@@ -607,7 +607,7 @@ class ScoreDisplay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        score < 3 ? const Text('LMAO', style: TextStyle(fontSize: 20)) : const Text('Good Job', style: TextStyle(fontSize: 20)),
+        score < 3 ? const Text('LMAO, are you okay (jus playing)?', style: TextStyle(fontSize: 20)) : const Text('Good Job', style: TextStyle(fontSize: 20)),
 
         Padding(
           padding: const EdgeInsets.only(top: 40),

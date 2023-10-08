@@ -422,7 +422,7 @@ class MathTest extends StatefulWidget {
 }
 
 class MathState extends State<MathTest> {
-  List<String> questions = ["1 + 1 = 2", "2 + 2 = 5"];
+  // List<String> questions = ["1 + 1 = 2", "2 + 2 = 5"];
 
   int currentScore = 0;
 
@@ -434,14 +434,25 @@ class MathState extends State<MathTest> {
     "1": {
       "question": "2 + 2 = 5",
       "answer": "No",
-    }
+    },
+    "3": {
+      "question": "7 - 4 = 3",
+      "answer": "Yes",
+    },
+    "4": {
+      "question": "12 + 22 = 55",
+      "answer": "No",
+    },
+    "5": {
+      "question": "6 * 25 = 15",
+      "answer": "No",
+    },
   };
-
 
   int currentQuestionID = 0;
 
   void answerQuestion(String answer) {
-    String currentAnswer = questions2["0"]?["answer"];
+    String currentAnswer = questions2["$currentQuestionID"]["answer"];
 
     if(answer == currentAnswer) {
       setState(() {
@@ -469,7 +480,7 @@ class MathState extends State<MathTest> {
           children: <Widget>[
             Padding(
                 padding: const EdgeInsets.fromLTRB(0, 200, 0, 50),
-                child: QuestionDisplay(currentQuestion: questions[currentQuestionID]),
+                child: QuestionDisplay(currentQuestion: questions2["$currentQuestionID"]["question"]),
             ),
 
             SizedBox(

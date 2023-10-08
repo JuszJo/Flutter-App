@@ -427,11 +427,11 @@ class MathState extends State<MathTest> {
   int currentScore = 0;
 
   Map questions2 = {
-    "0": {
+    "1": {
       "question": "1 + 1 = 2",
       "answer": "Yes",
     },
-    "1": {
+    "2": {
       "question": "2 + 2 = 5",
       "answer": "No",
     },
@@ -449,7 +449,7 @@ class MathState extends State<MathTest> {
     },
   };
 
-  int currentQuestionID = 0;
+  int currentQuestionID = 1;
 
   void answerQuestion(String answer) {
     String currentAnswer = questions2["$currentQuestionID"]["answer"];

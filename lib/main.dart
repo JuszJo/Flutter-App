@@ -424,10 +424,24 @@ class MathTest extends StatefulWidget {
 class MathState extends State<MathTest> {
   List<String> questions = ["1 + 1 = 2", "2 + 2 = 5"];
 
+  Map questions2 = {
+    "0": {
+      "question": "1 + 1 = 2",
+      "answer": "Yes",
+    },
+    "1": {
+      "question": "2 + 2 = 5",
+      "answer": "No",
+    }
+  };
+
+
   int currentQuestionID = 0;
 
   void answerQuestion(String answer) {
-    if(answer == "Yes") {
+    String currentAnswer = questions2["0"]?["answer"];
+
+    if(answer == currentAnswer) {
       setState(() {
         currentQuestionID += 1;
       });

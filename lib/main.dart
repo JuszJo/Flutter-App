@@ -414,16 +414,8 @@ void main() {
   );
 }
 
-class MathTest extends StatefulWidget {
-  const MathTest({super.key});
-
-  @override
-  State<MathTest> createState() => MathState();
-}
-
-class MathState extends State<MathTest> {
-  // List<String> questions = ["1 + 1 = 2", "2 + 2 = 5"];
-  Map questions2 = {
+Map getQuestions() {
+  Map questions = {
     "1": {
       "question": "1 + 1 = 2",
       "answer": "Yes",
@@ -444,7 +436,41 @@ class MathState extends State<MathTest> {
       "question": "6 * 25 = 15",
       "answer": "No",
     },
+    "6": {
+      "question": "4 / 18 = 0.5",
+      "answer": "No",
+    },
+    "7": {
+      "question": "90 + 18 = 98",
+      "answer": "No",
+    },
+    "8": {
+      "question": "20 - 18 = 2",
+      "answer": "Yes",
+    },
+    "9": {
+      "question": "72 * 18 = 1296",
+      "answer": "Yes",
+    },
+    "10": {
+      "question": "128 / 2 * 3 + 10 - 77 = 125",
+      "answer": "Yes",
+    },
   };
+
+  return questions;
+}
+
+class MathTest extends StatefulWidget {
+  const MathTest({super.key});
+
+  @override
+  State<MathTest> createState() => MathState();
+}
+
+class MathState extends State<MathTest> {
+  // List<String> questions = ["1 + 1 = 2", "2 + 2 = 5"];
+  Map questions2 = getQuestions();
 
   int currentScore = 0;
 
@@ -455,7 +481,7 @@ class MathState extends State<MathTest> {
   void answerQuestion(String answer) {
     String currentAnswer = questions2["$currentQuestionID"]["answer"];
 
-    if(answer == currentAnswer) {
+    if(answer.toLowerCase() == currentAnswer.toLowerCase()) {
       setState(() {
         currentScore += 1;
 
@@ -535,7 +561,7 @@ class QuestionDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(currentQuestion, style: const TextStyle(fontSize: 48));
+    return Text(currentQuestion, style: const TextStyle(fontSize: 48), textAlign: TextAlign.center);
   }
 }
 

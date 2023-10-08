@@ -462,7 +462,9 @@ class MathState extends State<MathTest> {
       });
     }
     else {
-      currentQuestionID += 1;
+      setState(() {
+        currentQuestionID += 1;
+      });
     }
   }
 

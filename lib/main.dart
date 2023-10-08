@@ -424,6 +424,8 @@ class MathTest extends StatefulWidget {
 class MathState extends State<MathTest> {
   List<String> questions = ["1 + 1 = 2", "2 + 2 = 5"];
 
+  int currentScore = 0;
+
   Map questions2 = {
     "0": {
       "question": "1 + 1 = 2",
@@ -443,8 +445,13 @@ class MathState extends State<MathTest> {
 
     if(answer == currentAnswer) {
       setState(() {
+        currentScore += 1;
+
         currentQuestionID += 1;
       });
+    }
+    else {
+      currentQuestionID += 1;
     }
   }
 

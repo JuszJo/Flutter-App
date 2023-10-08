@@ -406,6 +406,13 @@ class SecondRoute extends StatelessWidget {
 
 // todo yourself
 
+void main() {
+  runApp(
+    const MaterialApp(
+      home: MathTest(),
+    )
+  );
+}
 
 class MathTest extends StatefulWidget {
   const MathTest({super.key});
@@ -417,10 +424,14 @@ class MathTest extends StatefulWidget {
 class MathState extends State<MathTest> {
   List<String> questions = ["1 + 1 = 2", "2 + 2 = 5"];
 
-  void answerQuestion() {
-    // setState(() {
-      
-    // });
+  int currentQuestionID = 0;
+
+  void answerQuestion(String answer) {
+    if(answer == "Yes") {
+      setState(() {
+        currentQuestionID += 1;
+      });
+    }
   }
 
   @override
@@ -430,19 +441,21 @@ class MathState extends State<MathTest> {
         title: const Text('Math Test'), centerTitle: true,
       ),
 
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(
-            height: 64,
-            child: QuestionDisplay(currentQuestion: questions[0])
-          ),
+      body: Container(
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+                padding: const EdgeInsets.fromLTRB(0, 200, 0, 50),
+                child: QuestionDisplay(currentQuestion: questions[currentQuestionID]),
+            ),
 
-          SizedBox(
-            // height: 64,
-            child: AnswerButton(onPressed: answerQuestion)
-          ),
-        ],
+            SizedBox(
+              child: AnswerButton(onPressed: answerQuestion)
+            ),
+          ],
+        ),  
       ),
     );
   }
@@ -455,20 +468,32 @@ class QuestionDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(currentQuestion);
+    return Text(currentQuestion, style: const TextStyle(fontSize: 40));
   }
 }
 
 class AnswerButton extends StatelessWidget {
-  const AnswerButton({required this.onPressed, super.key});
+  const AnswerButton({required this.onPressed(String str), super.key});
 
-  final VoidCallback onPressed;
+  final void Function(String) onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      child: const Text('Yes'),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ElevatedButton(
+          onPressed: () => onPressed('Yes'),
+          child: const Text('Yes'),
+        ),
+        
+        const SizedBox(width: 16),
+
+        ElevatedButton(
+          onPressed: () => onPressed('No'),
+          child: const Text('No'),
+        ),
+      ],
     );
   }
 }

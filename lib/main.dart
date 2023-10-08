@@ -423,9 +423,6 @@ class MathTest extends StatefulWidget {
 
 class MathState extends State<MathTest> {
   // List<String> questions = ["1 + 1 = 2", "2 + 2 = 5"];
-
-  int currentScore = 0;
-
   Map questions2 = {
     "1": {
       "question": "1 + 1 = 2",
@@ -449,7 +446,11 @@ class MathState extends State<MathTest> {
     },
   };
 
+  int currentScore = 0;
+
   int currentQuestionID = 1;
+
+  bool finished = false;
 
   void answerQuestion(String answer) {
     String currentAnswer = questions2["$currentQuestionID"]["answer"];
@@ -466,7 +467,22 @@ class MathState extends State<MathTest> {
         currentQuestionID += 1;
       });
     }
+
+    if(currentQuestionID > questions2.length) {
+      finished = true;
+    }
   }
+
+  void playAgain() {
+    setState(() {
+      currentQuestionID = 1;
+
+      currentScore = 0;
+
+      finished = false;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -475,20 +491,37 @@ class MathState extends State<MathTest> {
         title: const Text('Math Test'), centerTitle: true,
       ),
 
-      body: Container(
+      body: SizedBox(
         width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-                padding: const EdgeInsets.fromLTRB(0, 200, 0, 50),
-                child: QuestionDisplay(currentQuestion: questions2["$currentQuestionID"]["question"]),
-            ),
-
-            SizedBox(
-              child: AnswerButton(onPressed: answerQuestion)
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.only(top: 100),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            // mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              if(!finished) Padding(
+                padding: const EdgeInsets.only(top: 0),
+                child: Text("Question $currentQuestionID of ${questions2.length}", style: const TextStyle(fontSize: 20)),
+              ),
+        
+              if(!finished) Padding(
+                  padding: const EdgeInsets.only(top: 40),
+                  child: QuestionDisplay(currentQuestion: questions2["$currentQuestionID"]["question"]),
+              ),
+        
+              if(!finished) Padding(
+                padding: const EdgeInsets.only(top: 40),
+                child: SizedBox(
+                  child: AnswerButton(onPressed: answerQuestion)
+                ),
+              ),
+              
+              if(finished) Padding(
+                padding: const EdgeInsets.only(top: 0),
+                child: ScoreDisplay(score: currentScore, totalQuestions: questions2.length, playAgain: playAgain),
+              ),
+            ],
+          ),
         ),  
       ),
     );
@@ -502,7 +535,7 @@ class QuestionDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(currentQuestion, style: const TextStyle(fontSize: 40));
+    return Text(currentQuestion, style: const TextStyle(fontSize: 48));
   }
 }
 
@@ -516,17 +549,53 @@ class AnswerButton extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        
         ElevatedButton(
           onPressed: () => onPressed('Yes'),
-          child: const Text('Yes'),
+          style: ElevatedButton.styleFrom(minimumSize: const Size(100, 40)),
+          child: const Text('Yes', style: TextStyle(fontSize: 20)),
         ),
         
         const SizedBox(width: 16),
 
         ElevatedButton(
           onPressed: () => onPressed('No'),
-          child: const Text('No'),
+          style: ElevatedButton.styleFrom(minimumSize: const Size(100, 40)),
+          child: const Text('No', style: TextStyle(fontSize: 20)),
         ),
+      ],
+    );
+  }
+}
+
+class ScoreDisplay extends StatelessWidget {
+  const ScoreDisplay({required this.score, required this.totalQuestions, required this.playAgain, super.key});
+
+  final int score;
+
+  final int totalQuestions;
+
+  final VoidCallback playAgain;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        score < 3 ? const Text('LMAO', style: TextStyle(fontSize: 20)) : const Text('Good Job', style: TextStyle(fontSize: 20)),
+
+        Padding(
+          padding: const EdgeInsets.only(top: 40),
+          child: Text('Score: $score out of $totalQuestions', style: const TextStyle(fontSize: 40)),
+        ),
+
+        Padding(
+          padding: const EdgeInsets.only(top: 40),
+          child: ElevatedButton(
+            onPressed: playAgain,
+            style: ElevatedButton.styleFrom(minimumSize: const Size(200, 40)),
+            child: const Text('Play Again?', style: TextStyle(fontSize: 20)),
+          ),
+        )
       ],
     );
   }

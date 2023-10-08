@@ -344,7 +344,7 @@ class CounterButton extends StatelessWidget {
 
 // Routing
 
-void main() {
+/* void main() {
   runApp(
     const MaterialApp(
       home: RoutingBasics(),
@@ -394,6 +394,81 @@ class SecondRoute extends StatelessWidget {
           child: const Text('Go Back'),
         )
       ),
+
+      floatingActionButton: const FloatingActionButton(
+        onPressed: null,
+        tooltip: "OMO",
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+} */
+
+// todo yourself
+
+
+class MathTest extends StatefulWidget {
+  const MathTest({super.key});
+
+  @override
+  State<MathTest> createState() => MathState();
+}
+
+class MathState extends State<MathTest> {
+  List<String> questions = ["1 + 1 = 2", "2 + 2 = 5"];
+
+  void answerQuestion() {
+    // setState(() {
+      
+    // });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Math Test'), centerTitle: true,
+      ),
+
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          SizedBox(
+            height: 64,
+            child: QuestionDisplay(currentQuestion: questions[0])
+          ),
+
+          SizedBox(
+            // height: 64,
+            child: AnswerButton(onPressed: answerQuestion)
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class QuestionDisplay extends StatelessWidget {
+  const QuestionDisplay({required this.currentQuestion, super.key});
+
+  final String currentQuestion;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(currentQuestion);
+  }
+}
+
+class AnswerButton extends StatelessWidget {
+  const AnswerButton({required this.onPressed, super.key});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      child: const Text('Yes'),
     );
   }
 }

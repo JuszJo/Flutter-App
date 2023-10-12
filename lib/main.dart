@@ -406,7 +406,7 @@ class SecondRoute extends StatelessWidget {
 
 // todo yourself
 
-void main() {
+/* void main() {
   runApp(
     const MaterialApp(
       home: MathTest(),
@@ -625,7 +625,7 @@ class ScoreDisplay extends StatelessWidget {
       ],
     );
   }
-}
+} */
 
 /* void main() {
   runApp(
@@ -1086,3 +1086,30 @@ class Customer {
     return '\$${(totalPriceCents / 100.0).toStringAsFixed(2)}';
   }
 } */
+
+void main() {
+  runApp(
+    const MaterialApp(
+      home: AboutImage(),
+    )
+  );
+}
+
+class AboutImage extends StatelessWidget {
+  const AboutImage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('GTA 5'), centerTitle: true,
+      ),
+
+      body: Container(
+        child: Center(
+          child: Image.asset('assets/img1.png'),
+        ),
+      ),
+    );
+  }
+}

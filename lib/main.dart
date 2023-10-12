@@ -1087,7 +1087,7 @@ class Customer {
   }
 } */
 
-void main() {
+/* void main() {
   runApp(
     const MaterialApp(
       home: AboutImage(),
@@ -1109,6 +1109,37 @@ class AboutImage extends StatelessWidget {
         child: Center(
           child: Image.asset('assets/img1.png'),
         ),
+      ),
+    );
+  }
+} */
+
+void main() {
+  runApp(
+    const MaterialApp(
+      home: PageViewTutorial(),  
+    )
+  );
+}
+
+class PageViewTutorial extends StatelessWidget {
+  const PageViewTutorial({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final PageController controller = PageController();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('GTA V'), centerTitle: true,
+      ),
+
+      body: PageView(
+        controller: controller,
+        children: <Widget>[
+          Image.asset('assets/img1.png'),
+          Image.asset('assets/img2.png'),
+        ],
       ),
     );
   }

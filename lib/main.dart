@@ -1131,6 +1131,14 @@ class PageViewTutorial extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: InkWell(
+          borderRadius: BorderRadius.circular(100),
+          onTap: () {
+            
+          },
+          child: const Icon(Icons.arrow_back),
+        ),
+
         title: const Text('GTA V'), centerTitle: true,
       ),
 

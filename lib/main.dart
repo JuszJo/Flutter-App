@@ -86,15 +86,21 @@ class _GameState extends State<TicTacToe> {
 
   Widget _showScore() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        Text(
-          'X score: ${scores['X']}',
-          style: const TextStyle(fontSize: 32),
+        Container(
+          margin: const EdgeInsets.only(top: 8),
+          child: Text(
+            'X score: ${scores['X']}',
+            style: const TextStyle(fontSize: 32),
+          ),
         ),
-        Text(
-          'O score: ${scores['O']}',
-          style: const TextStyle(fontSize: 32),
+        Container(
+          margin: const EdgeInsets.only(top: 8),
+          child: Text(
+            'O score: ${scores['O']}',
+            style: const TextStyle(fontSize: 32),
+          ),
         ),
       ],
     );

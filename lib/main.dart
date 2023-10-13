@@ -34,7 +34,7 @@ class _GameState extends State<TicTacToe> {
 
       body: Column(
         children: [
-          SizedBox(height: 500 ,child: _buildGrid(context)),
+          SizedBox(height: 400, child: _buildGrid(context)),
 
           _showScore(),
         ],
@@ -89,7 +89,7 @@ class _GameState extends State<TicTacToe> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Container(
-          margin: const EdgeInsets.only(top: 8),
+          margin: const EdgeInsets.only(top: 16),
           child: Text(
             'X score: ${scores['X']}',
             style: const TextStyle(fontSize: 32),

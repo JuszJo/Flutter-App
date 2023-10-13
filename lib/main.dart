@@ -20,6 +20,11 @@ class _GameState extends State<TicTacToe> {
 
   String currentTurn = 'X';
 
+  Map scores = <String, int>{
+    'X': 0,
+    'O': 0,
+  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +32,13 @@ class _GameState extends State<TicTacToe> {
         title: const Text('TicTacToe'), centerTitle: true,
       ),
 
-      body: _buildGrid(context),
+      body: Column(
+        children: [
+          SizedBox(height: 500 ,child: _buildGrid(context)),
+
+          _showScore(),
+        ],
+      ),
     );
   }
 
@@ -70,6 +81,22 @@ class _GameState extends State<TicTacToe> {
             style: const TextStyle(fontSize: 40)),
         ),
       ),
+    );
+  }
+
+  Widget _showScore() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          'X score: ${scores['X']}',
+          style: const TextStyle(fontSize: 32),
+        ),
+        Text(
+          'O score: ${scores['O']}',
+          style: const TextStyle(fontSize: 32),
+        ),
+      ],
     );
   }
 
@@ -213,6 +240,8 @@ class _GameState extends State<TicTacToe> {
           actions: <Widget>[
             ElevatedButton(
               onPressed: () {
+                scores[currentTurn] += 1;
+
                 _clearStates();
 
                 Navigator.of(context).pop();

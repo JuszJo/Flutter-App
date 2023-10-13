@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
+/* import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart'; */
 
 // void main() {
 //   runApp(
@@ -1157,7 +1157,7 @@ class PageViewTutorial extends StatelessWidget {
 
 // Photo View
 
-void main() {
+/* void main() {
   runApp(
     const MaterialApp(
       home: PhotoViewGalleryApp(),
@@ -1203,4 +1203,52 @@ class PhotoViewGalleryApp extends StatelessWidget {
     );
   }
 
+} */
+
+// attempt tic tac toe
+
+void main() {
+  runApp(
+    const MaterialApp(
+      home: TicTacToe(),
+    )
+  );
+}
+
+class TicTacToe extends StatefulWidget {
+  const TicTacToe({super.key});
+
+  @override
+  State<TicTacToe> createState() => _GameState();
+}
+
+class _GameState extends State<TicTacToe> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('TicTacToe'), centerTitle: true,
+      ),
+
+      body: _buildGrid(context),
+    );
+  }
+
+  Widget _buildGrid(BuildContext context) {
+    return Container(
+      child: GridView.count(
+        crossAxisCount: 3,
+        crossAxisSpacing: 5,
+        children: <Widget>[
+          Container(
+            color: Colors.teal,
+          ),
+
+          Container(
+            color: Colors.red,
+          ),
+        ],
+      ),
+    );
+  }
 }

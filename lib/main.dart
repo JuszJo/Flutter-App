@@ -1223,6 +1223,10 @@ class TicTacToe extends StatefulWidget {
 }
 
 class _GameState extends State<TicTacToe> {
+  List<String> boxState = ['', '', '', '', '', '', '', '', ''];
+
+  String currentTurn = 'X';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1235,20 +1239,60 @@ class _GameState extends State<TicTacToe> {
   }
 
   Widget _buildGrid(BuildContext context) {
+    int totalBoxes = 9;
+
     return Container(
+      padding: const EdgeInsets.all(16),
       child: GridView.count(
         crossAxisCount: 3,
         crossAxisSpacing: 5,
+        mainAxisSpacing: 5,
         children: <Widget>[
-          Container(
-            color: Colors.teal,
-          ),
-
-          Container(
-            color: Colors.red,
-          ),
+          for(int i = 0; i < totalBoxes; ++i) ...[
+            _buildBox(boxState[i], i),
+          ],
         ],
       ),
     );
+  }
+
+  Widget _buildBox(String state, int id) {
+    return GestureDetector(
+      onTap: () {
+        _boxPress(id);
+      },
+
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            style: BorderStyle.solid,
+            width: 1,
+            color: Colors.black,
+          ),
+        ),
+
+        child: Center(
+          child: Text(
+            state, 
+            style: const TextStyle(fontSize: 40)),
+        ),
+      ),
+    );
+  }
+
+  void _boxPress(int id) {
+    setState(() {
+      // print(currentTurn);
+
+      boxState[id] = currentTurn;
+
+      // currentTurn = currentTurn == 'X' ? 'O' : 'X';
+      // currentTurn += 'O';
+      _switchTurn();
+    });
+  }
+
+  void _switchTurn() {
+    currentTurn = currentTurn == 'X' ? 'O' : 'X';
   }
 }

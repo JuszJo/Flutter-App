@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 // void main() {
 //   runApp(
@@ -1114,7 +1116,7 @@ class AboutImage extends StatelessWidget {
   }
 } */
 
-void main() {
+/* void main() {
   runApp(
     const MaterialApp(
       home: PageViewTutorial(),  
@@ -1151,4 +1153,54 @@ class PageViewTutorial extends StatelessWidget {
       ),
     );
   }
+} */
+
+// Photo View
+
+void main() {
+  runApp(
+    const MaterialApp(
+      home: PhotoViewGalleryApp(),
+    )
+  );
+}
+
+class PhotoViewApp extends StatelessWidget {
+  const PhotoViewApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Photo View App"), centerTitle: true,
+      ),
+
+      body: Container(
+        child: PhotoView(
+          imageProvider: const AssetImage('assets/img1.png'),
+        ),
+      ),
+    );
+  }
+}
+
+class PhotoViewGalleryApp extends StatelessWidget {
+  const PhotoViewGalleryApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final PageController controller = PageController();
+
+    return Container(
+      child: PhotoViewGallery(
+        pageOptions: <PhotoViewGalleryPageOptions>[
+          PhotoViewGalleryPageOptions(imageProvider: const AssetImage('assets/img1.png')),
+          PhotoViewGalleryPageOptions(imageProvider: const AssetImage('assets/img2.png')),
+        ],
+
+        pageController: controller,
+      )
+    );
+  }
+
 }

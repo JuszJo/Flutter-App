@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui' as ui;
 import 'package:flame/extensions.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
@@ -70,12 +71,25 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
                   title: const Text("Space Game"), centerTitle: true,
                 ),
 
-                body: SizedBox(
-                  width: 500,
-                  height: 500,
-                  child: CustomPaint(
-                    painter: GamePainter(image: snapshot.data!),
-                    size: Size.infinite,
+                body: GestureDetector(
+                  onVerticalDragStart: (details) {
+                    
+                  },
+                  onVerticalDragUpdate: (details) {
+                    
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 500,
+                        height: 500,
+                        child: CustomPaint(
+                          painter: GamePainter(image: snapshot.data!),
+                          size: Size.infinite,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               );
@@ -122,4 +136,8 @@ Future<ui.Image> loadUiImage(String imageAssetPath) async {
   });
 
   return completer.future;
+}
+
+class Spaceship {
+  
 }

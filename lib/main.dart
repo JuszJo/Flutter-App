@@ -1,7 +1,8 @@
 // Custome Painter
 
 import 'package:flutter/material.dart';
-import 'classes/my_square.dart';
+import 'package:my_app/classes/controls.dart';
+import 'package:my_app/classes/my_square.dart';
 
 void main() {
   runApp(
@@ -62,48 +63,7 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
 
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 40),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                GestureDetector(
-                  onTapDown: (details) {
-                    mySquare.moveLeft = true;
-                  },
-
-                  onTapUp: (details) {
-                    mySquare.moveLeft = false;
-                  },
-
-                  child: const Icon(Icons.arrow_back, size: 40)
-                ),
-          
-                Expanded(child: Center(
-                  child: GestureDetector(
-                    onTapDown: (details) {
-                      mySquare.shoot();
-                    },
-
-                    child: const Icon(Icons.settings, size: 40),
-
-                    // onTapUp: (details) {
-
-                    // },
-                  )
-                )),
-                
-                GestureDetector(
-                  onTapDown: (details) {
-                    mySquare.moveRight = true;
-                  },
-
-                  onTapUp: (details) {
-                    mySquare.moveRight = false;
-                  },
-
-                  child: const Icon(Icons.arrow_forward, size: 40)
-                ),
-              ],
-            ),
+            child: MyControls(mySquare: mySquare)
           ),
         ],
       ),

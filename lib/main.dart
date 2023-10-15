@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/* import 'package:flutter/material.dart';
 
 void main() {
   runApp(
@@ -303,4 +303,424 @@ class _GameState extends State<TicTacToe> {
       currentTurn = 'X';
     });
   }
+} */
+
+// A "pure widgets" implementation for the classic Retro Race Games
+// Pseudo-3D tracks with curves and background scrolling.
+
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Retro Race',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const MyHomePage(title: 'Retro Race'),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  final String title;
+  const MyHomePage({required this.title, super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
+  late final controller = AnimationController(
+    duration: const Duration(seconds: 10),
+    vsync: this,
+  )..repeat();
+  final backW = [1, 2, 1, 1, 3, 1, 3, 1, 2, 1, 2, 3, 2, 1];
+  final backH = [4, 2, 3, 1, 2, 2, 1, 4, 3, 2, 4, 3, 1, 3];
+
+  final track = [
+    Segment(0.0, 10.0),
+    Segment(0.0, 200.0),
+    Segment(1.0, 200.0),
+    Segment(0.0, 400.0),
+    Segment(-1.0, 200.0),
+    Segment(0.0, 400.0),
+    Segment(-1.0, 400.0),
+    Segment(1.0, 400.0),
+    Segment(0.0, 400.0),
+    Segment(0.3, 500.0),
+    Segment(-0.1, 100.0),
+    Segment(-1.2, 300.0),
+    Segment(1.0, 300.0),
+    Segment(0.2, 300.0),
+    Segment(0.0, 500.0),
+  ];
+  var middlePoint = 0.0;
+  var speed = 0.0;
+  var accelerating = false;
+  var leftDown = false;
+  var rightDown = false;
+  var distance = 35.0;
+  var prevt = 0.0;
+  var curvature = 0.0;
+  var trackCurvature = 0.0;
+  var playerCurvature = 0.0;
+  late var maxDistance;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    controller.repeat();
+    maxDistance = track.fold<double>(0.0, (a, b) => b.dist + a);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Stack(
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                child: AnimatedBuilder(
+                  animation: controller,
+                  builder: (context, child) {
+                    final w = MediaQuery.of(context).size.width;
+                    final b = w ~/ 20;
+                    return Stack(
+                      children: [
+                        Container(
+                          color: Colors.lightBlue,
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          left: -trackCurvature * b * 10,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              for (var i = 0; i < backW.length * 5; i++)
+                                Container(
+                                  width: backW[i % backW.length].toDouble() * b,
+                                  height:
+                                      backH[i % backW.length].toDouble() * b,
+                                  color: Colors.black.withOpacity(1.0 -
+                                      (backH[i % backH.length] / 5.0) * 0.5),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+              Expanded(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final w = constraints.maxWidth;
+                    return AnimatedBuilder(
+                      animation: controller,
+                      builder: (context, child) {
+                        final t = (controller.value - prevt).clamp(0.0, 1.0);
+                        speed = (speed + (accelerating ? 2.0 * t : -3.0 * t))
+                            .clamp(0.0, 1.0);
+                        prevt = controller.value;
+                        distance += 1000 * t * speed;
+                        if (distance > maxDistance) {
+                          distance -= maxDistance;
+                        }
+                        var carDirection = 0;
+                        if (leftDown) {
+                          playerCurvature -= 2.0 * t * (1.0 - speed / 2.0);
+                          carDirection = -1;
+                        }
+                        if (rightDown) {
+                          playerCurvature += 2.0 * t * (1.0 - speed / 2.0);
+                          carDirection = 1;
+                        }
+                        if ((playerCurvature - trackCurvature).abs() >= 0.6) {
+                          speed = (speed - 7.0 * t).clamp(0.0, 1.0);
+                        }
+                        var trackSection = 0;
+                        var offset = 0.0;
+
+                        while (
+                            trackSection < track.length && offset <= distance) {
+                          offset += track[trackSection].dist;
+                          trackSection++;
+                        }
+                        final targetCurve = track[trackSection - 1].curve;
+                        final curvatureDiff =
+                            (targetCurve - curvature) * t * speed * 3.0;
+                        curvature += curvatureDiff;
+                        trackCurvature += curvature * t * speed * 5.0;
+                        final playerPosition =
+                            (playerCurvature - trackCurvature) * w / 2.0;
+                        return Stack(
+                          children: [
+                            Column(
+                              children: List.generate(
+                                50,
+                                (y) {
+                                  final perspective = y / 50.0 / 2.0;
+                                  final middle = 0.5 +
+                                      curvature * pow(1.0 - perspective, 3);
+                                  final roadWidth =
+                                      (0.1 + perspective * 0.8) / 2.0;
+                                  final clipWidth = roadWidth * 0.3;
+
+                                  final leftGrassX =
+                                      (middle - roadWidth - clipWidth) * w;
+                                  final leftClipX = (middle - roadWidth) * w;
+                                  final rightGrassX =
+                                      (middle + roadWidth + clipWidth) * w;
+                                  final rightClipX = (middle + roadWidth) * w;
+
+                                  final leftGrass =
+                                      leftGrassX > 0.0 && leftGrassX <= w
+                                          ? leftGrassX
+                                          : leftGrassX > w
+                                              ? w
+                                              : 0.0;
+                                  final leftClip = leftClipX > 0.0
+                                      ? min(leftClipX, w) - leftGrass
+                                      : 0.0;
+                                  final rightGrass =
+                                      rightGrassX > 0.0 && rightGrassX <= w
+                                          ? w - rightGrassX
+                                          : rightGrassX <= 0
+                                              ? w
+                                              : 0.0;
+                                  final rightClip = rightClipX < w
+                                      ? w - max(rightClipX, 0.0) - rightGrass
+                                      : 0.0;
+
+                                  final roadSize = max(
+                                      w -
+                                          leftGrass -
+                                          leftClip -
+                                          rightGrass -
+                                          rightClip,
+                                      0.0);
+                                  final grassColor = sin(
+                                              20.0 * pow(1.0 - perspective, 3) +
+                                                  distance * 0.1) >
+                                          0.0
+                                      ? Colors.greenAccent
+                                      : Colors.green[400];
+                                  final clipColor = sin(
+                                              50.0 * pow(1.0 - perspective, 3) +
+                                                  distance * 0.5) >
+                                          0.0
+                                      ? Colors.red
+                                      : Colors.white;
+                                  return Expanded(
+                                    child: Row(
+                                      children: [
+                                        if (leftGrass > 0)
+                                          Container(
+                                            width: leftGrass,
+                                            color: grassColor,
+                                          ),
+                                        if (leftClip > 0)
+                                          Container(
+                                            width: leftClip,
+                                            color: clipColor,
+                                          ),
+                                        if (roadSize > 0)
+                                          Container(
+                                            width: roadSize,
+                                            color: distance - y >= 0 &&
+                                                    distance - y < 1
+                                                ? Colors.white
+                                                : Colors.grey,
+                                          ),
+                                        if (rightClip > 0)
+                                          Container(
+                                            width: rightClip,
+                                            color: clipColor,
+                                          ),
+                                        if (rightGrass > 0)
+                                          Container(
+                                            width: rightGrass,
+                                            color: grassColor,
+                                          ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              left: (w / 2) - (75 / 2) + playerPosition,
+                              child: SizedBox(
+                                height: w / 10.0,
+                                width: w / 10.0,
+                                child: FittedBox(
+                                  fit: BoxFit.fitWidth,
+                                  child: Column(
+                                    crossAxisAlignment: carDirection == 0
+                                        ? CrossAxisAlignment.center
+                                        : carDirection == 1
+                                            ? CrossAxisAlignment.end
+                                            : CrossAxisAlignment.start,
+                                    children: [
+                                      Row(children: [
+                                        Container(
+                                          color: Colors.black,
+                                          width: 10,
+                                          height: 20,
+                                        ),
+                                        Container(
+                                          color: Colors.blue[800],
+                                          width: 20,
+                                          height: 10,
+                                        ),
+                                        Container(
+                                          color: Colors.black,
+                                          width: 10,
+                                          height: 20,
+                                        ),
+                                      ]),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                                        child: Container(
+                                          color: Colors.blue[800],
+                                          width: 20,
+                                          height: 5,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                                        child: Container(
+                                          color: Colors.blue[400],
+                                          width: 40,
+                                          height: 10,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                                        child: Container(
+                                          color: Colors.blue[800],
+                                          width: 60,
+                                          height: 15,
+                                        ),
+                                      ),
+                                      Row(children: [
+                                        Container(
+                                          color: Colors.black,
+                                          width: 30,
+                                          height: 40,
+                                        ),
+                                        Container(
+                                          color: Colors.blue[800],
+                                          width: 65,
+                                          height: 30,
+                                        ),
+                                        Container(
+                                          color: Colors.black,
+                                          width: 30,
+                                          height: 40,
+                                        ),
+                                      ]),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+          Positioned(
+            bottom: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    accelerating = !accelerating;
+                  });
+                },
+                child: Icon(
+                  accelerating ? Icons.cancel : Icons.arrow_circle_up_outlined,
+                  size: 50,
+                  color: Colors.white.withOpacity(0.75),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTapDown: (_) {
+                      leftDown = true;
+                    },
+                    onTapUp: (_) {
+                      leftDown = false;
+                    },
+                    child: Transform.rotate(
+                      angle: -pi / 2.0,
+                      child: Icon(
+                        Icons.arrow_circle_up_outlined,
+                        size: 50,
+                        color: Colors.white.withOpacity(0.75),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTapDown: (_) {
+                      rightDown = true;
+                    },
+                    onTapUp: (_) {
+                      rightDown = false;
+                    },
+                    child: Transform.rotate(
+                      angle: pi / 2.0,
+                      child: Icon(
+                        Icons.arrow_circle_up_outlined,
+                        size: 50,
+                        color: Colors.white.withOpacity(0.75),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Segment {
+  final double curve;
+  final double dist;
+  Segment(this.curve, this.dist);
 }

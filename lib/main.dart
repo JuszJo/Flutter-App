@@ -13,6 +13,48 @@ void main() {
   );
 }
 
+class Spaceship {
+  int width = 50;
+  int height = 63;
+  double x = WidgetsBinding.instance.platformDispatcher.views.first.physicalSize.width / WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
+  double y = WidgetsBinding.instance.platformDispatcher.views.first.physicalSize.height / WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
+
+  int speed = 5;
+
+  bool left = false;
+  bool right = false;
+
+  Spaceship() {
+    x = x / 2 - width / 2;
+    y = 700 - height.toDouble() * 2;
+  }
+
+  void moveShip() {
+    if(left) {
+      x -= speed;
+    }
+    if(right) {
+      x += speed;
+    }
+  }
+
+  void drawShip(Canvas canvas, ui.Image img) {
+    Paint paint = Paint();
+
+    canvas.drawImage(
+      img,
+      Offset(x, y),
+      paint
+    );
+  }
+
+  void update(Canvas canvas, ui.Image img) {
+    drawShip(canvas, img);
+
+    moveShip();
+  }
+}
+
 class GameCanvas extends StatefulWidget {
   const GameCanvas({super.key});
 
@@ -24,6 +66,8 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
   late AnimationController _animationController;
 
   late Future<ui.Image> image;
+
+  Spaceship ship = Spaceship();
 
   @override
   void initState() {
@@ -72,20 +116,35 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
                 ),
 
                 body: GestureDetector(
-                  onVerticalDragStart: (details) {
+                  onHorizontalDragStart: (details) {
+
+                  },
+                  onHorizontalDragUpdate: (details) {
+                    // print(details.delta.dx);
+                    if(details.delta.dx < 0) {
+                      // print(details.delta.dx);
+                      ship.left = true;
+                      ship.right = false;
+                    }
+                    else if(details.delta.dx > 0) {
+                      // print(details.delta.dx);
+                      ship.right = true;
+                      ship.left = false;
+                    }
                     
                   },
-                  onVerticalDragUpdate: (details) {
-                    
+                  onHorizontalDragEnd: (details) {
+                    ship.left = false;
+                    ship.right = false;
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       SizedBox(
                         width: 500,
-                        height: 500,
+                        height: 700,
                         child: CustomPaint(
-                          painter: GamePainter(image: snapshot.data!),
+                          painter: GamePainter(image: snapshot.data!, ship: ship),
                           size: Size.infinite,
                         ),
                       ),
@@ -101,22 +160,26 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
 }
 
 class GamePainter extends CustomPainter {
-  const GamePainter({required this.image});
+  GamePainter({required this.image, required this.ship});
 
   final ui.Image image;
+
+  final Spaceship ship;
 
   @override
   void paint(Canvas canvas, Size size) {
     // game rendering logic
 
-    final paint = Paint();
-    paint.color = Colors.teal;
+    // final paint = Paint();
+    // paint.color = Colors.teal;
 
-    canvas.drawImage(
-      image,
-      Offset(size.width / 2 - image.width / 2, size.height - image.height.toDouble()),
-      paint
-    );
+    ship.update(canvas, image);
+
+    // canvas.drawImage(
+    //   image,
+    //   Offset(size.width / 2 - image.width / 2, size.height - image.height.toDouble()),
+    //   paint
+    // );
   }
 
   @override
@@ -136,8 +199,4 @@ Future<ui.Image> loadUiImage(String imageAssetPath) async {
   });
 
   return completer.future;
-}
-
-class Spaceship {
-  
 }

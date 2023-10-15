@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:ui' as ui;
-import 'package:flame/extensions.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
@@ -66,6 +64,11 @@ class Spaceship {
 
     detectWallCollision();
   }
+}
+
+class Bullet {
+  int width = 10;
+  int height = 10;
 }
 
 class GameCanvas extends StatefulWidget {

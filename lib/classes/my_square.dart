@@ -15,6 +15,8 @@ class MySquare {
   bool moveUp = false;
   bool moveDown = false;
 
+  // bool isShooting = true;
+
   int speed = 5;
 
   MySquare() {
@@ -35,4 +37,15 @@ class MySquare {
       left += speed;
     }
   }
+
+  void shoot() {
+    print("shoot");
+  }
+
+  void update() {
+    movementListen();
+
+    shoot();
+  }
+
 }

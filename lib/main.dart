@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'classes/my_square.dart';
-// import 'dart:math' as math;
 
 void main() {
   runApp(
@@ -34,6 +33,7 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
     )..addListener(() {
 
       // Update game state and render canvas
+
       setState(() {
         mySquare.movementListen();
       });
@@ -77,7 +77,19 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
                   child: const Icon(Icons.arrow_back, size: 40)
                 ),
           
-                const Expanded(child: Center()),
+                Expanded(child: Center(
+                  child: GestureDetector(
+                    onTapDown: (details) {
+                      mySquare.shoot();
+                    },
+
+                    child: const Icon(Icons.settings, size: 40),
+
+                    // onTapUp: (details) {
+
+                    // },
+                  )
+                )),
                 
                 GestureDetector(
                   onTapDown: (details) {
@@ -107,15 +119,9 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
 }
 
 class GamePainter extends CustomPainter {
-  // GamePainter({required this.animationController});
   GamePainter({required this.mySquare});
 
   final MySquare mySquare;
-
-  // final AnimationController animationController;
-  // late Animation<double> animation = 
-
-  // final som = Rect.fromCenter(center: const Offset(200, 200), width: 100, height: 100);
 
   @override
   void paint(Canvas canvas, Size size) {

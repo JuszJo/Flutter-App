@@ -63,6 +63,7 @@ flutter:
   assets:
     - assets/img1.png
     - assets/img2.png
+    - assets/spaceship.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

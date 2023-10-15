@@ -1,8 +1,8 @@
-// Custome Painter
-
+import 'dart:async';
+import 'dart:ui' as ui;
+import 'package:flame/extensions.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:my_app/classes/controls.dart';
-import 'package:my_app/classes/my_square.dart';
 
 void main() {
   runApp(
@@ -22,11 +22,13 @@ class GameCanvas extends StatefulWidget {
 class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
-  MySquare mySquare = MySquare();
+  late Future<ui.Image> image;
 
   @override
   void initState() {
     super.initState();
+
+    image = loadUiImage('assets/spaceship.png');
 
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 16),
@@ -36,38 +38,11 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
       // Update game state and render canvas
 
       setState(() {
-        mySquare.movementListen();
+        
       });
     });
 
     _animationController.repeat();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Game"), centerTitle: true,
-      ),
-
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          SizedBox(
-            height: 500,
-            child: CustomPaint(
-              painter: GamePainter(mySquare: mySquare),
-              size: Size.infinite,
-            ),
-          ),
-
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
-            child: MyControls(mySquare: mySquare)
-          ),
-        ],
-      ),
-    );
   }
 
   @override
@@ -76,12 +51,45 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
 
     super.dispose();
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<ui.Image>(
+      future: image,
+      
+      builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
+        switch(snapshot.connectionState) {
+          case ConnectionState.waiting: return const Text('Image Loading');
+          default:
+            if(snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
+            else {
+              return Scaffold(
+                appBar: AppBar(
+                  title: const Text("Space Game"), centerTitle: true,
+                ),
+
+                body: SizedBox(
+                  width: 500,
+                  height: 500,
+                  child: CustomPaint(
+                    painter: GamePainter(image: snapshot.data!),
+                    size: Size.infinite,
+                  ),
+                ),
+              );
+            }
+        }
+      }
+    );
+  }
 }
 
 class GamePainter extends CustomPainter {
-  GamePainter({required this.mySquare});
+  const GamePainter({required this.image});
 
-  final MySquare mySquare;
+  final ui.Image image;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -90,11 +98,28 @@ class GamePainter extends CustomPainter {
     final paint = Paint();
     paint.color = Colors.teal;
 
-    canvas.drawRect(mySquare.getSquare(), paint);
+    canvas.drawImage(
+      image,
+      Offset(size.width / 2 - image.width / 2, size.height - image.height.toDouble()),
+      paint
+    );
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;
   }
+}
+
+Future<ui.Image> loadUiImage(String imageAssetPath) async {
+  final ByteData data = await rootBundle.load(imageAssetPath);
+
+  final Completer<ui.Image> completer = Completer();
+
+  ui.decodeImageFromList(Uint8List.view(data.buffer), (ui.Image img) {
+    
+    return completer.complete(img);
+  });
+
+  return completer.future;
 }

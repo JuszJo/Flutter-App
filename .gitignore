@@ -46,3 +46,7 @@ app.*.map.json
 /lib/questions.dart
 /lib/retro_race.dart
 /lib/tictactoe.dart
+
+/lib/canvas.dart
+/lib/controls.dart
+/lib/my_square.dart

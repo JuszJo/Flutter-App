@@ -26,7 +26,7 @@ class Spaceship {
 
   Spaceship() {
     x = x / 2 - width / 2;
-    y = 700 - height.toDouble() * 2;
+    y = 600 - height.toDouble() * 2;
   }
 
   void moveShip() {
@@ -156,7 +156,7 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
                     children: [
                       SizedBox(
                         width: 500,
-                        height: 700,
+                        height: 600,
                         child: CustomPaint(
                           painter: GamePainter(image: snapshot.data!, ship: ship),
                           size: Size.infinite,

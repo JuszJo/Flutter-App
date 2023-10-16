@@ -26,7 +26,7 @@ class Spaceship {
 
   Spaceship() {
     x = x / 2 - width / 2;
-    y = 600 - height.toDouble() * 2;
+    y = 600 - height.toDouble();
   }
 
   void moveShip() {
@@ -83,8 +83,6 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
 
   late Future<ui.Image> image;
 
-  Spaceship ship = Spaceship();
-
   @override
   void initState() {
     super.initState();
@@ -105,6 +103,8 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
 
     _animationController.repeat();
   }
+
+  Spaceship ship = Spaceship();
 
   @override
   void dispose() {

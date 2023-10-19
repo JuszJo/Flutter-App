@@ -11,6 +11,8 @@ void main() {
   );
 }
 
+// TODO: Try multiple instances of Custom Painter Class
+
 class Spaceship {
   double screenWidth = WidgetsBinding.instance.platformDispatcher.views.first.physicalSize.width / WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
   double screenHeight = WidgetsBinding.instance.platformDispatcher.views.first.physicalSize.height / WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;

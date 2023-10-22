@@ -51,3 +51,4 @@ app.*.map.json
 /lib/controls.dart
 /lib/my_square.dart
 /lib/space.dart
+/lib/list.dart

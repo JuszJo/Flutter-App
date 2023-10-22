@@ -50,3 +50,4 @@ app.*.map.json
 /lib/canvas.dart
 /lib/controls.dart
 /lib/my_square.dart
+/lib/space.dart

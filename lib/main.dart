@@ -32,7 +32,7 @@ class MyScrollView extends StatelessWidget {
                         color: Colors.grey,
                         alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Text('Section $index', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                        child: Text('Section ${index + 1}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
                       ),
       
                       ListView.builder(
@@ -47,7 +47,9 @@ class MyScrollView extends StatelessWidget {
                       )
                     ],
                   );
-                }
+                },
+
+                childCount: 5,
               ),
             )
           ],

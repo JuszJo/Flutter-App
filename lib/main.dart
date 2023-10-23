@@ -1,12 +1,40 @@
 import 'dart:async';
 import 'dart:ui' as ui;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'classes/ship.dart';
 
 import "classes/bullet.dart";
 import 'utils/utils.dart';
 
-void main() {
+Future<void> _initializeView() {
+  final completer = Completer<void>();
+
+  final oldOnMetricsChanged = PlatformDispatcher.instance.onMetricsChanged!;
+
+  PlatformDispatcher.instance.onMetricsChanged = () {
+    if (_isViewInitialized && !completer.isCompleted) {
+      // revert monkey patch
+      PlatformDispatcher.instance.onMetricsChanged = oldOnMetricsChanged;
+
+      completer.complete(null);
+    }
+
+    oldOnMetricsChanged();
+  };
+
+  return completer.future;
+}
+
+bool get _isViewInitialized => PlatformDispatcher.instance.views.any((v) => v.physicalSize > Size.zero);
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  if(!_isViewInitialized) {
+    await _initializeView();
+  }
+
   runApp(
     const MaterialApp(
       home: SpaceShooters(),
@@ -85,20 +113,12 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
             else {
               return Scaffold(
                 appBar: AppBar(
-                  title: const Text("Space Game"), centerTitle: true,
+                  title: const Text('Space Shooters'), centerTitle: true,
                 ),
 
                 body: Stack(
                   children: [
                     MySpaceShip(ship: ship, bullet: bullet, snapshot: snapshot),
-                    // SizedBox(
-                    //   width: 500,
-                    //   height: 600,
-                    //   child: CustomPaint(
-                    //     painter: BulletPainter(bullet: bullet),
-                    //     size: Size.infinite,
-                    //   ),
-                    // ),
                   ],
                 ),
               );

@@ -3,8 +3,6 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 class Spaceship {
-  double screenWidth = WidgetsBinding.instance.platformDispatcher.views.first.physicalSize.width / WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
-  double screenHeight = WidgetsBinding.instance.platformDispatcher.views.first.physicalSize.height / WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
   int width = 50;
   int height = 63;
   double x = WidgetsBinding.instance.platformDispatcher.views.first.physicalSize.width / WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
@@ -33,15 +31,6 @@ class Spaceship {
     }
   }
 
-  void detectWallCollision() {
-    if(x + width > screenWidth) {
-      x = screenWidth - width;
-    }
-    if(x < 0) {
-      x = 0;
-    }
-  }
-
   void drawShip(Canvas canvas, ui.Image img) {
     Paint paint = Paint();
 
@@ -57,6 +46,80 @@ class Spaceship {
 
     // moveShip();
 
-    detectWallCollision();
+    // detectWallCollision();
+  }
+}
+
+class MySpaceShip extends StatelessWidget {
+  const MySpaceShip({required this.ship, required this.snapshot, required this.context, super.key});
+
+  final Spaceship ship;
+  final AsyncSnapshot<ui.Image> snapshot;
+  final BuildContext context;
+
+  // ship.x = 10;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onHorizontalDragStart: (details) {
+
+      },
+      onHorizontalDragUpdate: (details) {
+        if(details.delta.dx < 0) {
+          // print(details.delta.dx);
+          ship.feedDx(details.delta.dx);
+          ship.left = true;
+          ship.right = false;
+          // bullet.y -= 0.1;
+        }
+        else if(details.delta.dx > 0) {
+          // print(details.delta.dx);
+          ship.feedDx(details.delta.dx);
+          ship.right = true;
+          ship.left = false;
+        }
+      },
+      onHorizontalDragEnd: (details) {
+        // bullet.shot = true;
+        // bullet.moving = true;
+        ship.left = false;
+        ship.right = false;
+        // bullet.x = ship.x + (ship.width / 2) - (bullet.width / 2);
+        // bullet.y = ship.y - ship.height / 2;
+      },
+      child: SizedBox(
+        width: 500,
+        height: 600,
+        child: CustomPaint(
+          painter: ShipPainter(image: snapshot.data!, ship: ship),
+          size: Size.infinite,
+        ),
+      ),
+    );
+  }
+}
+
+class ShipPainter extends CustomPainter {
+  ShipPainter({required this.image, required this.ship});
+
+  final ui.Image image;
+
+  final Spaceship ship;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if(ship.x + ship.width > size.width) {
+      ship.x = size.width - ship.width;
+    }
+    if(ship.x < 0) {
+      ship.x = 0;
+    }
+    ship.update(canvas, image);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
   }
 }

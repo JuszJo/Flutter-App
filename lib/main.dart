@@ -25,6 +25,8 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
   late AnimationController _animationController;
 
   late Future<ui.Image> image;
+  Spaceship ship = Spaceship();
+  Bullet bullet = Bullet();
 
   @override
   void initState() {
@@ -36,19 +38,12 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
       duration: const Duration(milliseconds: 16),
       vsync: this,
     )..addListener(() {
-
       // Update game state and render canvas
-
-      setState(() {
-        
-      });
+      setState(() {});
     });
 
     _animationController.repeat();
   }
-
-  Spaceship ship = Spaceship();
-  Bullet bullet = Bullet();
 
   @override
   void dispose() {
@@ -75,75 +70,24 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
                   title: const Text("Space Game"), centerTitle: true,
                 ),
 
-                body: GestureDetector(
-                  onHorizontalDragStart: (details) {
-
-                  },
-                  onHorizontalDragUpdate: (details) {
-                    if(details.delta.dx < 0) {
-                      // print(details.delta.dx);
-                      ship.feedDx(details.delta.dx);
-                      ship.left = true;
-                      ship.right = false;
-                      bullet.y -= 0.1;
-                    }
-                    else if(details.delta.dx > 0) {
-                      // print(details.delta.dx);
-                      ship.feedDx(details.delta.dx);
-                      ship.right = true;
-                      ship.left = false;
-                    }
-                  },
-                  onHorizontalDragEnd: (details) {
-                    bullet.shot = true;
-                    bullet.moving = true;
-                    ship.left = false;
-                    ship.right = false;
-                  },
-                  child: Stack(
-                    children: [
-                      SizedBox(
-                        width: 500,
-                        height: 600,
-                        child: CustomPaint(
-                          painter: ShipPainter(image: snapshot.data!, ship: ship),
-                          size: Size.infinite,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 500,
-                        height: 600,
-                        child: CustomPaint(
-                          painter: BulletPainter(bullet: bullet),
-                          size: Size.infinite,
-                        ),
-                      ),
-                    ],
-                  ),
+                body: Stack(
+                  children: [
+                    MySpaceShip(ship: ship, snapshot: snapshot, context: context),
+                    // SizedBox(
+                    //   width: 500,
+                    //   height: 600,
+                    //   child: CustomPaint(
+                    //     painter: BulletPainter(bullet: bullet),
+                    //     size: Size.infinite,
+                    //   ),
+                    // ),
+                  ],
                 ),
               );
             }
         }
       }
     );
-  }
-}
-
-class ShipPainter extends CustomPainter {
-  ShipPainter({required this.image, required this.ship});
-
-  final ui.Image image;
-
-  final Spaceship ship;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    ship.update(canvas, image);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
   }
 }
 
@@ -162,7 +106,7 @@ class BulletPainter extends CustomPainter {
         paint
       );
 
-      bullet.y -= 2;
+      bullet.y -= bullet.speed;
     }
 
     if(bullet.y < 0) {

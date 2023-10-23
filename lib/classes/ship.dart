@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
+
+import 'bullet.dart';
 
 class Spaceship {
   int width = 50;
@@ -13,26 +14,8 @@ class Spaceship {
   bool left = false;
   bool right = false;
 
-  // Spaceship() {
-    // x = x / 2 - width / 2;
-    // y = 600 - height.toDouble();
-  // }
-  // Spaceship() {
-  //   x = x / 2 - width / 2;
-  //   y = 600 - height.toDouble();
-  // }
-
   void feedDx(double dx) {
     x += dx;
-  }
-
-  void moveShip() {
-    if(left) {
-      x -= speed;
-    }
-    if(right) {
-      x += speed;
-    }
   }
 
   void drawShip(Canvas canvas, ui.Image img) {
@@ -45,21 +28,26 @@ class Spaceship {
     );
   }
 
+  void detectWallCollision(Size size) {
+    if(x + width > size.width) {
+      x = size.width - width;
+    }
+    if(x < 0) {
+      x = 0;
+    }
+  }
+
   void update(Canvas canvas, ui.Image img) {
     drawShip(canvas, img);
-
-    // moveShip();
-
-    // detectWallCollision();
   }
 }
 
 class MySpaceShip extends StatelessWidget {
-  const MySpaceShip({required this.ship, required this.snapshot, required this.context, super.key});
+  const MySpaceShip({required this.ship, required this.bullet, required this.snapshot, super.key});
 
   final Spaceship ship;
+  final Bullet bullet;
   final AsyncSnapshot<ui.Image> snapshot;
-  final BuildContext context;
 
   @override
   Widget build(BuildContext context) {
@@ -69,32 +57,20 @@ class MySpaceShip extends StatelessWidget {
       },
       onHorizontalDragUpdate: (details) {
         if(details.delta.dx < 0) {
-          // print(details.delta.dx);
           ship.feedDx(details.delta.dx);
-          ship.left = true;
-          ship.right = false;
-          // bullet.y -= 0.1;
         }
         else if(details.delta.dx > 0) {
-          // print(details.delta.dx);
           ship.feedDx(details.delta.dx);
-          ship.right = true;
-          ship.left = false;
         }
       },
       onHorizontalDragEnd: (details) {
-        // bullet.shot = true;
-        // bullet.moving = true;
-        ship.left = false;
-        ship.right = false;
-        // bullet.x = ship.x + (ship.width / 2) - (bullet.width / 2);
-        // bullet.y = ship.y - ship.height / 2;
+        bullet.bullets.add([ship.x + (ship.width / 2) - (bullet.width / 2), ship.y - 20]);
       },
       child: SizedBox(
         width: 500,
         height: 600,
         child: CustomPaint(
-          painter: ShipPainter(image: snapshot.data!, ship: ship),
+          painter: ShipPainter(image: snapshot.data!, ship: ship, bullet: bullet),
           size: Size.infinite,
         ),
       ),
@@ -103,20 +79,19 @@ class MySpaceShip extends StatelessWidget {
 }
 
 class ShipPainter extends CustomPainter {
-  ShipPainter({required this.image, required this.ship});
+  ShipPainter({required this.image, required this.ship, required this.bullet});
 
   final ui.Image image;
 
   final Spaceship ship;
+  final Bullet bullet;
 
   @override
   void paint(Canvas canvas, Size size) {
-    if(ship.x + ship.width > size.width) {
-      ship.x = size.width - ship.width;
-    }
-    if(ship.x < 0) {
-      ship.x = 0;
-    }
+    ship.detectWallCollision(size);
+
+    bullet.paintBullets(canvas);
+
     ship.update(canvas, image);
   }
 

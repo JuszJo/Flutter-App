@@ -90,7 +90,7 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
 
                 body: Stack(
                   children: [
-                    MySpaceShip(ship: ship, snapshot: snapshot, context: context),
+                    MySpaceShip(ship: ship, bullet: bullet, snapshot: snapshot),
                     // SizedBox(
                     //   width: 500,
                     //   height: 600,

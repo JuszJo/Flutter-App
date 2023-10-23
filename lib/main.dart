@@ -9,13 +9,28 @@ import 'utils/utils.dart';
 void main() {
   runApp(
     const MaterialApp(
-      home: GameCanvas(),
+      home: SpaceShooters(),
     )
   );
 }
 
+class SpaceShooters extends StatelessWidget {
+  const SpaceShooters({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        return GameCanvas(constraints: constraints);
+      }
+    );
+  }
+}
+
 class GameCanvas extends StatefulWidget {
-  const GameCanvas({super.key});
+  const GameCanvas({required this.constraints, super.key});
+
+  final BoxConstraints constraints;
 
   @override
   State<GameCanvas> createState() => _GameCanvasState();
@@ -31,6 +46,9 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
+
+    ship.x = (widget.constraints.maxWidth / 2) - (ship.width / 2);
+    ship.y = widget.constraints.maxHeight - 200;
 
     image = loadUiImage('assets/spaceship.png');
 

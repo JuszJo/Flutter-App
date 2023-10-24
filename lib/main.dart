@@ -130,33 +130,51 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
   }
 }
 
-/* class BulletPainter extends CustomPainter {
-  BulletPainter({required this.bullet});
+class MySpaceShip extends StatelessWidget {
+  const MySpaceShip({required this.ship, required this.bullet, required this.snapshot, super.key});
 
+  final Spaceship ship;
   final Bullet bullet;
+  final AsyncSnapshot<List<ui.Image>> snapshot;
 
   @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint();
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onHorizontalDragStart: (details) {
 
-    if(bullet.shot && bullet.moving) {
-      canvas.drawRect(
-        Rect.fromLTWH(bullet.x, bullet.y, bullet.width, bullet.height),
-        paint
-      );
+      },
+      onHorizontalDragUpdate: (details) {
+        if(details.delta.dx < 0) {
+          ship.feedDx(details.delta.dx);
+        }
+        else if(details.delta.dx > 0) {
+          ship.feedDx(details.delta.dx);
+        }
+      },
+      onHorizontalDragEnd: (details) {
+        bullet.bullets.add([ship.x + (ship.width / 2) - (bullet.width / 2), ship.y - 20]);
+      },
+      child: Stack(
+        children: <Widget>[
+          SizedBox(
+            width: 500,
+            height: 600,
+            child: CustomPaint(
+              painter: ShipPainter(image: snapshot.data![0], ship: ship),
+              size: Size.infinite,
+            ),
+          ),
 
-      bullet.y -= bullet.speed;
-    }
-
-    if(bullet.y < 0) {
-      bullet.shot = false;
-      bullet.moving = false;
-      bullet.y = 400;
-    }
+          SizedBox(
+            width: 500,
+            height: 600,
+            child: CustomPaint(
+              painter: BulletPainter(image: snapshot.data![1], bullet: bullet),
+              size: Size.infinite,
+            ),
+          ),
+        ]
+      ),
+    );
   }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
-  }
-} */
+}

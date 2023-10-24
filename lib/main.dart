@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:ui' as ui;
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'classes/ship.dart';
+import 'package:flutter/foundation.dart';
 
+import 'classes/ship.dart';
 import "classes/bullet.dart";
+import 'package:my_app/classes/meteor.dart';
+
 import 'utils/utils.dart';
 
 Future<void> _initializeView() {
@@ -170,6 +172,15 @@ class MySpaceShip extends StatelessWidget {
             height: 600,
             child: CustomPaint(
               painter: BulletPainter(image: snapshot.data![1], bullet: bullet),
+              size: Size.infinite,
+            ),
+          ),
+
+          SizedBox(
+            width: 500,
+            height: 600,
+            child: CustomPaint(
+              painter: MeteorPainter(),
               size: Size.infinite,
             ),
           ),

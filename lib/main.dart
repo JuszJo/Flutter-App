@@ -130,7 +130,7 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
   }
 }
 
-class BulletPainter extends CustomPainter {
+/* class BulletPainter extends CustomPainter {
   BulletPainter({required this.bullet});
 
   final Bullet bullet;
@@ -159,4 +159,4 @@ class BulletPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;
   }
-}
+} */

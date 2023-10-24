@@ -36,6 +36,10 @@ class BulletPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    if(bullet.bullets.length > 10) {
+      bullet.bullets.removeAt(0);
+    }
+
     bullet.paintBullets(canvas, image);
   }
 

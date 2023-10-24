@@ -9,21 +9,12 @@ class Spaceship {
 
   int speed = 2;
 
-  bool left = false;
-  bool right = false;
-
   void feedDx(double dx) {
     x += dx;
   }
 
   void drawShip(Canvas canvas, ui.Image img) {
-    Paint paint = Paint();
-
-    canvas.drawImage(
-      img,
-      Offset(x, y),
-      paint
-    );
+    canvas.drawImage(img, Offset(x, y), Paint());
   }
 
   void detectWallCollision(Size size) {
@@ -33,10 +24,6 @@ class Spaceship {
     if(x < 0) {
       x = 0;
     }
-  }
-
-  void update(Canvas canvas, ui.Image img) {
-    drawShip(canvas, img);
   }
 }
 
@@ -51,7 +38,7 @@ class ShipPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     ship.detectWallCollision(size);
 
-    ship.update(canvas, image);
+    ship.drawShip(canvas, image);
   }
 
   @override

@@ -15,15 +15,16 @@ class Bullet {
   void paintBullets(Canvas canvas, ui.Image image) {
     if(bullets.isNotEmpty) {
       for(int i = 0; i < bullets.length; ++i) {
-        // Rect bulletRect = Rect.fromLTWH(bullets[i][0], bullets[i][1], width, height);
-
-        // canvas.drawRect(bulletRect, Paint());
-
         canvas.drawImage(image, Offset(bullets[i][0], bullets[i][1]), Paint());
 
         bullets[i][1] -= speed;
+        moveBullets(bullets[i]);
       }
     }
+  }
+
+  void moveBullets(List bullet) {
+    bullet[1] -= speed;
   }
 }
 

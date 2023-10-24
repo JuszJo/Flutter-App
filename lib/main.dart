@@ -68,6 +68,8 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
   late AnimationController _animationController;
 
   late Future<ui.Image> image;
+  late Future<ui.Image> bulletImage;
+  late Future<List<ui.Image>> finalFuture;
   Spaceship ship = Spaceship();
   Bullet bullet = Bullet();
 
@@ -79,6 +81,9 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
     ship.y = widget.constraints.maxHeight - 200;
 
     image = loadUiImage('assets/spaceship.png');
+    bulletImage = loadUiImage('assets/lasers.png');
+
+    finalFuture = Future.wait([image, bulletImage]);
 
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 16),
@@ -100,10 +105,10 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<ui.Image>(
-      future: image,
+    return FutureBuilder<List<ui.Image>>(
+      future: finalFuture,
       
-      builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<List<ui.Image>> snapshot) {
         switch(snapshot.connectionState) {
           case ConnectionState.waiting: return const Text('Image Loading');
           default:

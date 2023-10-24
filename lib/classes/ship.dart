@@ -47,7 +47,7 @@ class MySpaceShip extends StatelessWidget {
 
   final Spaceship ship;
   final Bullet bullet;
-  final AsyncSnapshot<ui.Image> snapshot;
+  final AsyncSnapshot<List<ui.Image>> snapshot;
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +72,7 @@ class MySpaceShip extends StatelessWidget {
             width: 500,
             height: 600,
             child: CustomPaint(
-              painter: ShipPainter(image: snapshot.data!, ship: ship),
+              painter: ShipPainter(image: snapshot.data![0], ship: ship),
               size: Size.infinite,
             ),
           ),
@@ -81,7 +81,7 @@ class MySpaceShip extends StatelessWidget {
             width: 500,
             height: 600,
             child: CustomPaint(
-              painter: BulletPainter(bullet: bullet),
+              painter: BulletPainter(image: snapshot.data![1], bullet: bullet),
               size: Size.infinite,
             ),
           ),

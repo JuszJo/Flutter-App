@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
@@ -12,12 +12,14 @@ class Bullet {
   bool moving = false;
   List bullets = [];
 
-  void paintBullets(Canvas canvas) {
+  void paintBullets(Canvas canvas, ui.Image image) {
     if(bullets.isNotEmpty) {
       for(int i = 0; i < bullets.length; ++i) {
-        Rect bulletRect = Rect.fromLTWH(bullets[i][0], bullets[i][1], width, height);
+        // Rect bulletRect = Rect.fromLTWH(bullets[i][0], bullets[i][1], width, height);
 
-        canvas.drawRect(bulletRect, Paint());
+        // canvas.drawRect(bulletRect, Paint());
+
+        canvas.drawImage(image, Offset(bullets[i][0], bullets[i][1]), Paint());
 
         bullets[i][1] -= speed;
       }
@@ -26,13 +28,14 @@ class Bullet {
 }
 
 class BulletPainter extends CustomPainter {
-  BulletPainter({required this.bullet});
+  BulletPainter({required this.image, required this.bullet});
 
+  final ui.Image image;
   final Bullet bullet;
 
   @override
   void paint(Canvas canvas, Size size) {
-    bullet.paintBullets(canvas);
+    bullet.paintBullets(canvas, image);
   }
 
   @override

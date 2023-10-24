@@ -116,11 +116,7 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
                   title: const Text('Space Shooters'), centerTitle: true,
                 ),
 
-                body: Stack(
-                  children: [
-                    MySpaceShip(ship: ship, bullet: bullet, snapshot: snapshot),
-                  ],
-                ),
+                body: MySpaceShip(ship: ship, bullet: bullet, snapshot: snapshot),
               );
             }
         }

@@ -66,31 +66,41 @@ class MySpaceShip extends StatelessWidget {
       onHorizontalDragEnd: (details) {
         bullet.bullets.add([ship.x + (ship.width / 2) - (bullet.width / 2), ship.y - 20]);
       },
-      child: SizedBox(
-        width: 500,
-        height: 600,
-        child: CustomPaint(
-          painter: ShipPainter(image: snapshot.data!, ship: ship, bullet: bullet),
-          size: Size.infinite,
-        ),
+      child: Stack(
+        children: <Widget>[
+          SizedBox(
+            width: 500,
+            height: 600,
+            child: CustomPaint(
+              painter: ShipPainter(image: snapshot.data!, ship: ship),
+              size: Size.infinite,
+            ),
+          ),
+
+          SizedBox(
+            width: 500,
+            height: 600,
+            child: CustomPaint(
+              painter: BulletPainter(bullet: bullet),
+              size: Size.infinite,
+            ),
+          ),
+        ]
       ),
     );
   }
 }
 
 class ShipPainter extends CustomPainter {
-  ShipPainter({required this.image, required this.ship, required this.bullet});
+  ShipPainter({required this.image, required this.ship});
 
   final ui.Image image;
 
   final Spaceship ship;
-  final Bullet bullet;
 
   @override
   void paint(Canvas canvas, Size size) {
     ship.detectWallCollision(size);
-
-    bullet.paintBullets(canvas);
 
     ship.update(canvas, image);
   }

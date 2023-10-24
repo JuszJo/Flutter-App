@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
+
 class Bullet {
   double x = 0;
   double y = 0;
@@ -20,5 +22,21 @@ class Bullet {
         bullets[i][1] -= speed;
       }
     }
+  }
+}
+
+class BulletPainter extends CustomPainter {
+  BulletPainter({required this.bullet});
+
+  final Bullet bullet;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    bullet.paintBullets(canvas);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
   }
 }

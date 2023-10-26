@@ -10,7 +10,7 @@ class Spaceship {
   int speed = 2;
   double buffer = 0;
   double nextFrame = 30;
-  // double nextFrame = 100;
+  bool shooting = false;
 
   late Bullet bullet;
 
@@ -55,7 +55,9 @@ class ShipPainter extends CustomPainter {
 
     ship.drawShip(canvas, image);
 
-    ship.autoShoot();
+    if(ship.shooting) {
+      ship.autoShoot();
+    }
   }
 
   @override

@@ -194,7 +194,15 @@ class MySpaceShip extends StatelessWidget {
       onHorizontalDragStart: (details) {
 
       },
+      onTapDown: (details) {
+        ship.shooting = true;
+      },
+      onTapUp: (details) {
+        ship.shooting = false;
+      },
       onHorizontalDragUpdate: (details) {
+        ship.shooting = true;
+
         if(details.delta.dx < 0) {
           ship.feedDx(details.delta.dx);
         }
@@ -203,7 +211,7 @@ class MySpaceShip extends StatelessWidget {
         }
       },
       onHorizontalDragEnd: (details) {
-        // bullet.bullets.add([ship.x + (ship.width / 2) - (bullet.width / 2), ship.y - 20]);
+        ship.shooting = false;
       },
       child: Stack(
         children: <Widget>[

@@ -71,9 +71,11 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
 
   late Future<ui.Image> image;
   late Future<ui.Image> bulletImage;
+  late Future<ui.Image> meteorImage;
   late Future<List<ui.Image>> finalFuture;
   Spaceship ship = Spaceship();
   Bullet bullet = Bullet();
+  Meteor meteor = Meteor();
 
   @override
   void initState() {
@@ -84,8 +86,9 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
 
     image = loadUiImage('assets/spaceship.png');
     bulletImage = loadUiImage('assets/lasers.png');
+    meteorImage = loadUiImage('assets/asteroid.png');
 
-    finalFuture = Future.wait([image, bulletImage]);
+    finalFuture = Future.wait([image, bulletImage, meteorImage]);
 
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 16),
@@ -123,7 +126,7 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
                   title: const Text('Space Shooters'), centerTitle: true,
                 ),
 
-                body: MySpaceShip(ship: ship, bullet: bullet, snapshot: snapshot),
+                body: MySpaceShip(ship: ship, bullet: bullet, meteor: meteor, snapshot: snapshot),
               );
             }
         }
@@ -133,10 +136,11 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
 }
 
 class MySpaceShip extends StatelessWidget {
-  const MySpaceShip({required this.ship, required this.bullet, required this.snapshot, super.key});
+  const MySpaceShip({required this.ship, required this.bullet, required this.meteor, required this.snapshot, super.key});
 
   final Spaceship ship;
   final Bullet bullet;
+  final Meteor meteor;
   final AsyncSnapshot<List<ui.Image>> snapshot;
 
   @override
@@ -180,7 +184,7 @@ class MySpaceShip extends StatelessWidget {
             width: 500,
             height: 600,
             child: CustomPaint(
-              painter: MeteorPainter(),
+              painter: MeteorPainter(image: snapshot.data![2], meteor: meteor),
               size: Size.infinite,
             ),
           ),

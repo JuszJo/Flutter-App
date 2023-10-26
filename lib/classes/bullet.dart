@@ -7,7 +7,7 @@ class Bullet {
   double y = 0;
   double width = 10;
   double height = 15;
-  double speed = 5;
+  double speed = 10;
   bool shot = false;
   bool moving = false;
   List bullets = [];
@@ -17,7 +17,6 @@ class Bullet {
       for(int i = 0; i < bullets.length; ++i) {
         canvas.drawImage(image, Offset(bullets[i][0], bullets[i][1]), Paint());
 
-        bullets[i][1] -= speed;
         moveBullets(bullets[i]);
       }
     }

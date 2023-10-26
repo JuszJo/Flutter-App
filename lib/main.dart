@@ -79,6 +79,8 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
   Bullet bullet = Bullet();
   Meteor meteor = Meteor();
   MeteorAnimated animatedMeteor = MeteorAnimated();
+  double score = 0;
+  double currentBaseScore = 0;
 
   @override
   void initState() {
@@ -102,6 +104,13 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
     )..addListener(() {
       // Update game state and render canvas
       setState(() {
+        if(score % 10 == 0 && score != currentBaseScore) {
+          meteor.speed += 0.5;
+
+          bullet.speed += 0.5;
+
+          currentBaseScore = score;
+        }
         checkBulletMeteorCollision(bullet.bullets, meteor.meteors);
       });
     });
@@ -126,6 +135,8 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
             animatedMeteor.destroyed.add([...currentMeteor, 1.toDouble()]);
             meteor.meteors.removeAt(j);
             bullet.bullets.removeAt(i);
+
+            score += 1;
           }
         }
       }
@@ -180,7 +191,7 @@ class MySpaceShip extends StatelessWidget {
     required this.snapshot,
     required this.animatedMeteor,
     super.key
-    });
+  });
 
   final Spaceship ship;
   final Bullet bullet;

@@ -6,12 +6,14 @@ import 'package:my_app/utils/utils.dart';
 class Meteor {
   double x = 100;
   double y = 0;
-  double width = 96;
-  double height = 96;
+  double width = 40;
+  double height = 36;
   double speed = 3;
+  // double speed = 0.5;
   List<List> meteors = [[randomLocation(), 0.toDouble()]];
   double buffer = 0;
   double nextFrame = 50;
+  // double nextFrame = 100;
   Map<String, int> hitboxOffset = {
     "x": 25,
     "y": 30,
@@ -29,18 +31,24 @@ class Meteor {
     ++buffer;
   }
 
+  void showBorder(Canvas canvas, List meteor) {
+    Paint paint = Paint();
+
+    paint.style = PaintingStyle.stroke;
+
+    Rect border = Rect.fromLTWH(meteor[0], meteor[1], width, height);
+
+    canvas.drawRect(border, paint);
+  }
+
   void drawMeteor(Canvas canvas, image) {
     if(meteors.isNotEmpty) {
       for(int i = 0; i < meteors.length; ++i) {
         canvas.drawImage(image, Offset(meteors[i][0], meteors[i][1]), Paint());
 
-        Paint paint = Paint();
+        // Rect border = Rect.fromLTWH(meteors[i][0] + 25, meteors[i][1] + 30, width - 50, height - 60);
 
-        paint.style = PaintingStyle.stroke;
-
-        Rect border = Rect.fromLTWH(meteors[i][0] + 25, meteors[i][1] + 30, width - 50, height - 60);
-
-        canvas.drawRect(border, paint);
+        showBorder(canvas, meteors[i]);
 
         moveMeteor(meteors[i]);
       }
@@ -61,7 +69,7 @@ class MeteorPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    if(meteor.meteors.length > 10) {
+    if(meteor.meteors.length > 5) {
       meteor.meteors.removeAt(0);
     }
 

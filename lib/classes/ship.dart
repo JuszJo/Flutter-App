@@ -10,6 +10,7 @@ class Spaceship {
   int speed = 2;
   double buffer = 0;
   double nextFrame = 20;
+  // double nextFrame = 100;
 
   late Bullet bullet;
 

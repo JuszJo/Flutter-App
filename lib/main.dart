@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:my_app/classes/collision.dart';
 
 import 'classes/ship.dart';
 import "classes/bullet.dart";
@@ -98,14 +99,14 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
     )..addListener(() {
       // Update game state and render canvas
       setState(() {
-        checkBulletMeteorCollision(bullet.bullets, meteor.meteors);
+        // checkBulletMeteorCollision(bullet.bullets, meteor.meteors);
       });
     });
 
     _animationController.repeat();
   }
 
-  void checkBulletMeteorCollision(List bullets, List meteors) {
+  /* void checkBulletMeteorCollision(List bullets, List meteors) {
     if(bullet.bullets.isNotEmpty && meteor.meteors.isNotEmpty) {
       for(int i = 0; i < bullets.length; ++i) {
         List currentBullet = bullets[i];
@@ -125,7 +126,7 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
         }
       }
     }
-  }
+  } */
 
   @override
   void dispose() {
@@ -211,6 +212,15 @@ class MySpaceShip extends StatelessWidget {
             height: 600,
             child: CustomPaint(
               painter: MeteorPainter(image: snapshot.data![2], meteor: meteor),
+              size: Size.infinite,
+            ),
+          ),
+
+          SizedBox(
+            width: 500,
+            height: 600,
+            child: CustomPaint(
+              painter: CollisionPainter(bullet: bullet, meteor: meteor),
               size: Size.infinite,
             ),
           ),

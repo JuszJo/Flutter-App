@@ -1,13 +1,17 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:my_app/classes/bullet.dart';
 
 class Spaceship {
   int width = 50;
   int height = 63;
   double x = 0;
   double y = 0;
-
   int speed = 2;
+  double buffer = 0;
+  double nextFrame = 20;
+
+  late Bullet bullet;
 
   void feedDx(double dx) {
     x += dx;
@@ -25,6 +29,16 @@ class Spaceship {
       x = 0;
     }
   }
+
+  void autoShoot() {
+    if(buffer == nextFrame) {
+      bullet.bullets.add([x + (width / 2) - (bullet.width / 2), y - 20]);
+
+      buffer = 0;
+    }
+
+    ++buffer;
+  }
 }
 
 class ShipPainter extends CustomPainter {
@@ -39,6 +53,8 @@ class ShipPainter extends CustomPainter {
     ship.detectWallCollision(size);
 
     ship.drawShip(canvas, image);
+
+    ship.autoShoot();
   }
 
   @override

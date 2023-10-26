@@ -17,6 +17,14 @@ class Bullet {
       for(int i = 0; i < bullets.length; ++i) {
         canvas.drawImage(image, Offset(bullets[i][0], bullets[i][1]), Paint());
 
+        Paint paint = Paint();
+
+        paint.style = PaintingStyle.stroke;
+
+        Rect border = Rect.fromLTWH(bullets[i][0], bullets[i][1], width, height);
+
+        canvas.drawRect(border, paint);
+
         moveBullets(bullets[i]);
       }
     }

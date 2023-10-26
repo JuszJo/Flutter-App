@@ -81,6 +81,8 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
   void initState() {
     super.initState();
 
+    ship.bullet = bullet;
+
     ship.x = (widget.constraints.maxWidth / 2) - (ship.width / 2);
     ship.y = widget.constraints.maxHeight - 200;
 
@@ -95,10 +97,34 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
       vsync: this,
     )..addListener(() {
       // Update game state and render canvas
-      setState(() {});
+      setState(() {
+        checkBulletMeteorCollision(bullet.bullets, meteor.meteors);
+      });
     });
 
     _animationController.repeat();
+  }
+
+  void checkBulletMeteorCollision(List bullets, List meteors) {
+    if(bullet.bullets.isNotEmpty && meteor.meteors.isNotEmpty) {
+      for(int i = 0; i < bullets.length; ++i) {
+        List currentBullet = bullets[i];
+
+        for(int j = 0; j < meteors.length; ++j) {
+          List currentMeteor = meteors[j];
+
+          if(
+            currentBullet[0] + bullet.width > currentMeteor[0] + meteor.hitboxOffset["x"] &&
+            currentBullet[0] < currentMeteor[0] + meteor.width + meteor.hitboxOffset["width"] &&
+            currentBullet[1] + bullet.height > currentMeteor[1] + meteor.hitboxOffset["y"] &&
+            currentBullet[1] < currentMeteor[1] + meteor.height + meteor.hitboxOffset["height"]
+          ) {
+            meteor.meteors.removeAt(j);
+            bullet.bullets.removeAt(i);
+          }
+        }
+      }
+    }
   }
 
   @override
@@ -158,7 +184,7 @@ class MySpaceShip extends StatelessWidget {
         }
       },
       onHorizontalDragEnd: (details) {
-        bullet.bullets.add([ship.x + (ship.width / 2) - (bullet.width / 2), ship.y - 20]);
+        // bullet.bullets.add([ship.x + (ship.width / 2) - (bullet.width / 2), ship.y - 20]);
       },
       child: Stack(
         children: <Widget>[

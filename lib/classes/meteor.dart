@@ -8,10 +8,16 @@ class Meteor {
   double y = 0;
   double width = 96;
   double height = 96;
-  double speed = 5;
+  double speed = 3;
   List<List> meteors = [[randomLocation(), 0.toDouble()]];
   double buffer = 0;
   double nextFrame = 50;
+  Map<String, int> hitboxOffset = {
+    "x": 25,
+    "y": 30,
+    "width": -50,
+    "height": -60,
+  };
 
   void spawnMeteor() {
     if(buffer == nextFrame) {
@@ -27,6 +33,14 @@ class Meteor {
     if(meteors.isNotEmpty) {
       for(int i = 0; i < meteors.length; ++i) {
         canvas.drawImage(image, Offset(meteors[i][0], meteors[i][1]), Paint());
+
+        Paint paint = Paint();
+
+        paint.style = PaintingStyle.stroke;
+
+        Rect border = Rect.fromLTWH(meteors[i][0] + 25, meteors[i][1] + 30, width - 50, height - 60);
+
+        canvas.drawRect(border, paint);
 
         moveMeteor(meteors[i]);
       }

@@ -28,7 +28,7 @@ class Bullet {
       for(int i = 0; i < bullets.length; ++i) {
         canvas.drawImage(image, Offset(bullets[i][0], bullets[i][1]), Paint());
 
-        showBorder(canvas, bullets[i]);
+        // showBorder(canvas, bullets[i]);
 
         moveBullets(bullets[i]);
       }

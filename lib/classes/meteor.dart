@@ -12,7 +12,7 @@ class Meteor {
   // double speed = 0.5;
   List<List> meteors = [[randomLocation(), 0.toDouble()]];
   double buffer = 0;
-  double nextFrame = 50;
+  double nextFrame = 40;
   // double nextFrame = 100;
   Map<String, int> hitboxOffset = {
     "x": 25,
@@ -48,7 +48,7 @@ class Meteor {
 
         // Rect border = Rect.fromLTWH(meteors[i][0] + 25, meteors[i][1] + 30, width - 50, height - 60);
 
-        showBorder(canvas, meteors[i]);
+        // showBorder(canvas, meteors[i]);
 
         moveMeteor(meteors[i]);
       }

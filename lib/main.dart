@@ -73,10 +73,12 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
   late Future<ui.Image> image;
   late Future<ui.Image> bulletImage;
   late Future<ui.Image> meteorImage;
+  late Future<ui.Image> explosionImage;
   late Future<List<ui.Image>> finalFuture;
   Spaceship ship = Spaceship();
   Bullet bullet = Bullet();
   Meteor meteor = Meteor();
+  MeteorAnimated animatedMeteor = MeteorAnimated();
 
   @override
   void initState() {
@@ -90,8 +92,9 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
     image = loadUiImage('assets/spaceship.png');
     bulletImage = loadUiImage('assets/lasers.png');
     meteorImage = loadUiImage('assets/asteroid.png');
+    explosionImage = loadUiImage('assets/asteroid_explode.png');
 
-    finalFuture = Future.wait([image, bulletImage, meteorImage]);
+    finalFuture = Future.wait([image, bulletImage, meteorImage, explosionImage]);
 
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 16),
@@ -99,14 +102,14 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
     )..addListener(() {
       // Update game state and render canvas
       setState(() {
-        // checkBulletMeteorCollision(bullet.bullets, meteor.meteors);
+        checkBulletMeteorCollision(bullet.bullets, meteor.meteors);
       });
     });
 
     _animationController.repeat();
   }
 
-  /* void checkBulletMeteorCollision(List bullets, List meteors) {
+  void checkBulletMeteorCollision(List bullets, List meteors) {
     if(bullet.bullets.isNotEmpty && meteor.meteors.isNotEmpty) {
       for(int i = 0; i < bullets.length; ++i) {
         List currentBullet = bullets[i];
@@ -115,18 +118,19 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
           List currentMeteor = meteors[j];
 
           if(
-            currentBullet[0] + bullet.width > currentMeteor[0] + meteor.hitboxOffset["x"] &&
-            currentBullet[0] < currentMeteor[0] + meteor.width + meteor.hitboxOffset["width"] &&
-            currentBullet[1] + bullet.height > currentMeteor[1] + meteor.hitboxOffset["y"] &&
-            currentBullet[1] < currentMeteor[1] + meteor.height + meteor.hitboxOffset["height"]
+            currentBullet[0] + bullet.width > currentMeteor[0] &&
+            currentBullet[0] < currentMeteor[0] + meteor.width &&
+            currentBullet[1] + bullet.height > currentMeteor[1] &&
+            currentBullet[1] < currentMeteor[1] + meteor.height
           ) {
+            animatedMeteor.destroyed.add([...currentMeteor, 1.toDouble()]);
             meteor.meteors.removeAt(j);
             bullet.bullets.removeAt(i);
           }
         }
       }
     }
-  } */
+  }
 
   @override
   void dispose() {
@@ -153,7 +157,13 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
                   title: const Text('Space Shooters'), centerTitle: true,
                 ),
 
-                body: MySpaceShip(ship: ship, bullet: bullet, meteor: meteor, snapshot: snapshot),
+                body: MySpaceShip(
+                  ship: ship,
+                  bullet: bullet,
+                  meteor: meteor,
+                  snapshot: snapshot,
+                  animatedMeteor: animatedMeteor,
+                ),
               );
             }
         }
@@ -163,11 +173,19 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
 }
 
 class MySpaceShip extends StatelessWidget {
-  const MySpaceShip({required this.ship, required this.bullet, required this.meteor, required this.snapshot, super.key});
+  const MySpaceShip({
+    required this.ship,
+    required this.bullet,
+    required this.meteor,
+    required this.snapshot,
+    required this.animatedMeteor,
+    super.key
+    });
 
   final Spaceship ship;
   final Bullet bullet;
   final Meteor meteor;
+  final MeteorAnimated animatedMeteor;
   final AsyncSnapshot<List<ui.Image>> snapshot;
 
   @override
@@ -220,7 +238,7 @@ class MySpaceShip extends StatelessWidget {
             width: 500,
             height: 600,
             child: CustomPaint(
-              painter: CollisionPainter(bullet: bullet, meteor: meteor),
+              painter: CollisionPainter(image: snapshot.data![3], animatedMeteor: animatedMeteor),
               size: Size.infinite,
             ),
           ),

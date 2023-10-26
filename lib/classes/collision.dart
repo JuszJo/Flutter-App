@@ -1,47 +1,70 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
-import 'package:my_app/classes/bullet.dart';
-import 'package:my_app/classes/meteor.dart';
+
+class MeteorAnimated {
+  int meteorSprites = 7;
+  double currentIndex = 1;
+  double buffer = 0;
+  double nextFrame = 5;
+  List<List> destroyed = [];
+
+  void animate() {
+    if(buffer == nextFrame) {
+      for (var i = 0; i < destroyed.length; i++) {
+        destroyed[i][2] += 1;
+
+        if(destroyed[i][2] > 7) {
+          destroyed.removeAt(i);
+        }
+      }
+      buffer = 0;
+    }
+
+    ++buffer;
+  }
+}
 
 class CollisionPainter extends CustomPainter {
-  CollisionPainter({required this.bullet, required this.meteor});
+  CollisionPainter({required this.image, required this.animatedMeteor});
 
-  Bullet bullet;
-  Meteor meteor;
+  ui.Image image;
+  MeteorAnimated animatedMeteor;
+
+  void drawExplosion(Canvas canvas) {
+    if(animatedMeteor.destroyed.isNotEmpty) {
+      for(var i = 0; i < animatedMeteor.destroyed.length; i++) {
+        canvas.drawAtlas(
+          image,
+          <RSTransform>[
+            for(List destroyedMeteor in animatedMeteor.destroyed)
+              RSTransform.fromComponents(
+                rotation: 0.0,
+                scale: 1.0,
+                anchorX: 28.0,
+                anchorY: 32.0,
+                translateX: destroyedMeteor[0],
+                translateY: destroyedMeteor[1]
+              )
+          ],
+          <Rect>[
+            for(List destroyedMeteor in animatedMeteor.destroyed) 
+              Rect.fromLTWH(destroyedMeteor[2] * 96, 0, 96, 96)
+          ],
+          null,
+          null,
+          null,
+          Paint()
+        );
+      }
+
+      animatedMeteor.animate();
+    }
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
-    checkBulletMeteorCollision(bullet.bullets, meteor.meteors);
-  }
-
-  void checkBulletMeteorCollision(List bullets, List meteors) {
-    if(bullet.bullets.isNotEmpty && meteor.meteors.isNotEmpty) {
-      for(int i = 0; i < bullets.length; ++i) {
-        List currentBullet = bullets[i];
-
-        for(int j = 0; j < meteors.length; ++j) {
-          List currentMeteor = meteors[j];
-
-          if(
-            currentBullet[0] + bullet.width > currentMeteor[0] &&
-            currentBullet[0] < currentMeteor[0] + meteor.width &&
-            currentBullet[1] + bullet.height > currentMeteor[1] &&
-            currentBullet[1] < currentMeteor[1] + meteor.height
-          ) {
-            meteor.meteors.removeAt(j);
-            bullet.bullets.removeAt(i);
-          }
-          /* if(
-            currentBullet[0] + bullet.width > currentMeteor[0] + meteor.hitboxOffset["x"] &&
-            currentBullet[0] < currentMeteor[0] + meteor.width + meteor.hitboxOffset["width"] &&
-            currentBullet[1] + bullet.height > currentMeteor[1] + meteor.hitboxOffset["y"] &&
-            currentBullet[1] < currentMeteor[1] + meteor.height + meteor.hitboxOffset["height"]
-          ) {
-            meteor.meteors.removeAt(j);
-            bullet.bullets.removeAt(i);
-          } */
-        }
-      }
-    }
+    drawExplosion(canvas);
   }
 
   @override

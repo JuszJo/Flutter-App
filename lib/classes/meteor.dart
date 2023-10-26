@@ -11,6 +11,7 @@ class Meteor {
   double speed = 3;
   // double speed = 0.5;
   List<List> meteors = [[randomLocation(), 0.toDouble()]];
+  List<List> destroyed = [];
   double buffer = 0;
   double nextFrame = 40;
   // double nextFrame = 100;

@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:my_app/classes/collision.dart';
+import 'package:my_app/classes/powerup.dart';
 
 import 'classes/ship.dart';
 import "classes/bullet.dart";
@@ -79,6 +80,7 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
   Bullet bullet = Bullet();
   Meteor meteor = Meteor();
   MeteorAnimated animatedMeteor = MeteorAnimated();
+  PowerUp powerUp = PowerUp();
   double score = 0;
   double currentBaseScore = 0;
 
@@ -112,6 +114,12 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
           currentBaseScore = score;
         }
         checkBulletMeteorCollision(bullet.bullets, meteor.meteors);
+
+        if(powerUp.time) {
+          powerUp.generatePowerUp();
+        }
+
+        checkPowerUpCollision();
       });
     });
 
@@ -139,6 +147,22 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
             score += 1;
           }
         }
+      }
+    }
+  }
+
+  void checkPowerUpCollision() {
+    if(powerUp.powerUp.isNotEmpty) {
+      if(
+        ship.x + ship.width > powerUp.x &&
+        ship.x < powerUp.x + powerUp.width &&
+        ship.y + ship.height > powerUp.height &&
+        ship.y < powerUp.y + powerUp.height
+      ) {
+        ship.nextFrame -= 10;
+        ship.buffer = 0;
+
+        powerUp.powerUp.removeLast();
       }
     }
   }
@@ -174,6 +198,7 @@ class _GameCanvasState extends State<GameCanvas> with SingleTickerProviderStateM
                   meteor: meteor,
                   snapshot: snapshot,
                   animatedMeteor: animatedMeteor,
+                  powerUp: powerUp,
                 ),
               );
             }
@@ -190,6 +215,7 @@ class MySpaceShip extends StatelessWidget {
     required this.meteor,
     required this.snapshot,
     required this.animatedMeteor,
+    required this.powerUp,
     super.key
   });
 
@@ -197,6 +223,7 @@ class MySpaceShip extends StatelessWidget {
   final Bullet bullet;
   final Meteor meteor;
   final MeteorAnimated animatedMeteor;
+  final PowerUp powerUp;
   final AsyncSnapshot<List<ui.Image>> snapshot;
 
   @override
@@ -227,7 +254,7 @@ class MySpaceShip extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           SizedBox(
-            width: 500,
+            width: double.infinity,
             height: 600,
             child: CustomPaint(
               painter: ShipPainter(image: snapshot.data![0], ship: ship),
@@ -258,6 +285,17 @@ class MySpaceShip extends StatelessWidget {
             height: 600,
             child: CustomPaint(
               painter: CollisionPainter(image: snapshot.data![3], animatedMeteor: animatedMeteor),
+              size: Size.infinite,
+            ),
+          ),
+
+          SizedBox(
+            width: 500,
+            height: 600,
+            child: CustomPaint(
+              painter: PowerUpPainter(
+                powerUp: powerUp,
+              ),
               size: Size.infinite,
             ),
           ),

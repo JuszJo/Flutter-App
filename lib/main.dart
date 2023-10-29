@@ -11,6 +11,8 @@ import 'package:my_app/classes/meteor.dart';
 
 import 'utils/utils.dart';
 
+// TODO: Make with clean architecture
+
 Future<void> _initializeView() {
   final completer = Completer<void>();
 
